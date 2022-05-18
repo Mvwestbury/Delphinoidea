@@ -1,0 +1,87 @@
+# Estimate gene trees for the target taxon set
+
+taxa <- c("LIPOTE", "PILOTW", "WHITES", "INDOBO", "BOTTLE", "ORCAWL", "BELUGA")
+
+loci <- grep("[.]fasta", dir("out1k_rm/"), value = T)
+
+for(i in 1:length(loci)){
+	system(paste0("~/Desktop/Software/iqtree-1.7-beta9-MacOSX/bin/iqtree -st DNA -m GTR+I+R -s out1k_rm/", loci[i], " -pre out1k_trees/", loci[i], " -fast -redo -alrt 1000"))
+	system(paste0("rm ", paste0("out1k_trees/", loci[i], c(".log", ".bionj", ".ckp.gz", ".iqtree", ".mldist"), collapse = " ")))
+}
+
+# Collect trees and their descriptive metrics
+
+library(phangorn)
+source("funcs.R")
+
+trfiles <- grep("treefile", dir("out1k_trees/"), value = T)
+trs <- lapply(trfiles, function(x) read.tree(paste0("out1k_trees/", x)))
+for(i in 1:length(trs)){
+	trs[[i]]$tip.label <- sapply(trs[[i]]$tip.label, function(x) strsplit(x, split = "_")[[1]][1])
+	trs[[i]] <- drop.tip(trs[[i]], trs[[i]]$tip.label[which(!trs[[i]]$tip.label %in% taxa)])
+}
+rttcov <- sapply(trs, rtt.cov)
+sptrs <- read.tree("whales.trs")
+class(trs) <- "multiPhylo"
+dist2sptrs <- lapply(sptrs, function(x) sapply(trs, function(y) RF.dist(x, y)))
+
+names(trs) <- names(rttcov) <- trfiles
+for(i in 1:12) names(dist2sptrs[[i]]) <- trfiles
+
+trlocs <- gsub("[.]treefile", "", trfiles)
+
+# Concatenate molecular data for each set of loci.
+# Trees 1 and 7 are those with the greatest gene-tree frequency. Others were added afterwards for confirmation.
+### HENCE THE LACK OF PROPER LOOPING BELOW
+
+source("concatenate.R")
+
+loci1 <- trlocs[which(dist2sptrs[[1]] == 0)]
+loci2 <- trlocs[which(dist2sptrs[[2]] == 0)]                                                                                           
+loci3 <- trlocs[which(dist2sptrs[[3]] == 0)]                                                                                           
+loci7 <- trlocs[which(dist2sptrs[[7]] == 0)]
+loci8 <- trlocs[which(dist2sptrs[[8]] == 0)]                                                                                           
+loci12 <- trlocs[which(dist2sptrs[[12]] == 0)]
+
+dat1 <- lapply(loci1, function(x) read.dna(paste0("out1k_rm/", x), format = "fasta"))
+dat2 <- lapply(loci2, function(x) read.dna(paste0("out1k_rm/", x), format = "fasta"))
+dat3 <- lapply(loci3, function(x) read.dna(paste0("out1k_rm/", x), format = "fasta"))
+dat7 <- lapply(loci7, function(x) read.dna(paste0("out1k_rm/", x), format = "fasta"))
+dat8 <- lapply(loci8, function(x) read.dna(paste0("out1k_rm/", x), format = "fasta"))
+dat12 <- lapply(loci12, function(x) read.dna(paste0("out1k_rm/", x), format = "fasta"))
+
+for(i in 1:length(dat1)) rownames(dat1[[i]]) <- sapply(rownames(dat1[[i]]), function(x) strsplit(x, split = "/")[[1]][1])
+for(i in 1:length(dat2)) rownames(dat2[[i]]) <- sapply(rownames(dat2[[i]]), function(x) strsplit(x, split = "/")[[1]][1])
+for(i in 1:length(dat3)) rownames(dat3[[i]]) <- sapply(rownames(dat3[[i]]), function(x) strsplit(x, split = "/")[[1]][1])
+for(i in 1:length(dat7)) rownames(dat7[[i]]) <- sapply(rownames(dat7[[i]]), function(x) strsplit(x, split = "/")[[1]][1])
+for(i in 1:length(dat8)) rownames(dat8[[i]]) <- sapply(rownames(dat8[[i]]), function(x) strsplit(x, split = "/")[[1]][1])
+for(i in 1:length(dat12)) rownames(dat12[[i]]) <- sapply(rownames(dat12[[i]]), function(x) strsplit(x, split = "/")[[1]][1])
+
+concdat1 <- concatenate(dat1)
+concdat2 <- concatenate(dat2)                                                                                                          
+concdat3 <- concatenate(dat3)                                                                                                          
+concdat7 <- concatenate(dat7)
+concdat8 <- concatenate(dat8)                                                                               
+concdat12 <- concatenate(dat12)
+
+concdat1 <- concdat1[which(rownames(concdat1) %in% taxa),]
+concdat2 <- concdat2[which(rownames(concdat2) %in% taxa),]
+concdat3 <- concdat3[which(rownames(concdat3) %in% taxa),]
+concdat7 <- concdat7[which(rownames(concdat7) %in% taxa),]
+concdat8 <- concdat8[which(rownames(concdat8) %in% taxa),]
+concdat12 <- concdat12[which(rownames(concdat12) %in% taxa),]
+
+rownames(concdat1) <- paste0(rownames(concdat1), " ")
+rownames(concdat2) <- paste0(rownames(concdat2), " ")
+rownames(concdat3) <- paste0(rownames(concdat3), " ")
+rownames(concdat7) <- paste0(rownames(concdat7), " ")
+rownames(concdat8) <- paste0(rownames(concdat8), " ")
+rownames(concdat12) <- paste0(rownames(concdat12), " ")
+
+write.dna(concdat1, file = "dating1/al.phy", nbcol = -1, colsep = "")
+write.dna(concdat2, file = "dating2/al.phy", nbcol = -1, colsep = "")
+write.dna(concdat3, file = "dating3/al.phy", nbcol = -1, colsep = "")
+write.dna(concdat7, file = "dating7/al.phy", nbcol = -1, colsep = "")
+write.dna(concdat8, file = "dating8/al.phy", nbcol = -1, colsep = "")
+write.dna(concdat12, file = "dating12/al.phy", nbcol = -1, colsep = "")
+

@@ -1,0 +1,16 @@
+# Runs the two-step Hessian matrix dating procedure in MCMCtree
+try(system("mcmctree dating_in.ctl"))
+system("mv out.BV in.BV")
+dating <- readLines("dating_in.ctl")
+dating[which(dating == grep("usedata", dating, value = T))] <- "usedata = 2*"
+writeLines(dating, con = "dating_in.ctl")
+try(system("mcmctree dating_in.ctl"))
+
+# Extracts and plots run diagnostics
+library(coda)
+datmc <- read.table("mcmc.txt", header=T)
+datmcmc <- mcmc(datmc)
+effectiveSize(datmcmc)
+pdf("mcmc.diagnostics.pdf", useDingbats = F, height = 5, width = 10)
+for(i in 1:ncol(datmcmc)) plot(datmcmc[,i], type = "l", main = colnames(datmcmc)[i])
+dev.off()

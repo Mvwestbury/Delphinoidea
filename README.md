@@ -111,10 +111,13 @@ Note: This is not meant to be standalone commands but examples to be used for re
 `realSFS -nSites 20000000 species.saf.idx -P 10 -tole 1e-8 2> log > species_20Mb.sfs`
 
 ## PSMC https://github.com/lh3/psmc
+- Create diploid consensus file
 
 `samtools mpileup -Q 30 -uf reference.fasta bamfile.bam | bcftools call -c - | vcfutils.pl vcf2fq -d 10 | gzip > diploid.fq.gz`
+- Create PSMC fasta file
 
 `utils/fq2psmcfa -q20 diploid.fq.gz > diploid.psmcfa`
+- Split PSMC fasta file for bootstrapping
 
 `utils/splitfa diploid.psmcfa > diploid.split.psmcfa`
 - Create PSMC data with whole sequence data

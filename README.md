@@ -79,7 +79,7 @@ Remove scaffold headers and add new header for the sequence
 - Calculate Fbranch
 
 `Dsuite Fbranch Tree.txt testDtri_tree.txt > fbranch.txt`
-Plot Fbranch
+- Plot Fbranch
 
 `dtools.py fbranch.txt Tree.txt`
 
@@ -122,7 +122,7 @@ Plot Fbranch
 `psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o diploid.psmc diploid.psmcfa`
 - Bootstrap replicates (with multiple threads)
 
-`seq 100 | xargs -P 10 -i psmc -N25 -t15 -r5 -b -p "4+25*2+4+6" -o diploid.round-{}.psmc diploid.split.psmcfa
+`seq 100 | xargs -P 10 -i psmc -N25 -t15 -r5 -b -p "4+25*2+4+6" -o diploid.round-{}.psmc diploid.split.psmcfa`
 - Combine the psmc output files
 
 `cat diploid.psmc diploid.round-*.psmc > combined.diploid.psmc`

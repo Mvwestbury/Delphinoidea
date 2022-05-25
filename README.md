@@ -48,7 +48,7 @@ Note: This is not meant to be standalone commands but examples to be used for re
 - Extract scaffolds while removing ends of scaffolds
 
 `bedtools getfasta -fi Lipotes_vexillifer_noXY_100kb.fasta -bed Lipotes_vexillifer_noXY_100kb.rounddown.bed > Lipotes_vexillifer_noXY_100kb.rounddown.fasta`
-Remove scaffold headers and add new header for the sequence
+- Remove scaffold headers and add new header for the sequence
 
 `sed '/^>/ d' Lipotes_vexillifer_noXY_100kb.rounddown.fasta | sed -e '1i\>Baiji' > labeled.fa`
 - Prepare mvf file
@@ -102,7 +102,7 @@ Remove scaffold headers and add new header for the sequence
 `hPSMC_quantify_split_time.py -N 20000 -l 500000 -u 5000000 -p 11 -s 11 -o output_prefix`
 
 ## Relative dating
-`Use scripts found in whaleDatingScripts directory
+- Use scripts found in whaleDatingScripts directory
 
 ## Heterozygosity https://github.com/ANGSD/angsd
 

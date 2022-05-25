@@ -97,7 +97,7 @@ Remove scaffold headers and add new header for the sequence
 - Plot PSMC to get predivergence Ne
 
 `psmc_plot.pl -g 20 -u 7.90E-09 -R -s 10 test species1_species2_hPSMC.psmc`
-- run simulations
+- Run simulations
 
 `hPSMC_quantify_split_time.py -N 20000 -l 500000 -u 5000000 -p 11 -s 11 -o output_prefix`
 
@@ -106,7 +106,7 @@ Remove scaffold headers and add new header for the sequence
 
 ## Heterozygosity https://github.com/ANGSD/angsd
 
-`angsd -GL 1 -mininddepth 5 -minmapq 30 -minq 30 -uniqueonly 1 -only_proper_pairs 1 -docounts 1 -i bamfile -ref GCF_000442215.1_Lipotes_vexillifer_v1_genomic.fna -P 5 -out species -doSaf 1 -anc GCF_000442215.1_Lipotes_vexillifer_v1_genomic.fna -rf Lipotes_vexillifer_noXY_100kb.txt -baq 1
+`angsd -GL 1 -mininddepth 5 -minmapq 30 -minq 30 -uniqueonly 1 -only_proper_pairs 1 -docounts 1 -i bamfile -ref GCF_000442215.1_Lipotes_vexillifer_v1_genomic.fna -P 5 -out species -doSaf 1 -anc GCF_000442215.1_Lipotes_vexillifer_v1_genomic.fna -rf Lipotes_vexillifer_noXY_100kb.txt -baq 1`
 
 `realSFS -nSites 20000000 species.saf.idx -P 10 -tole 1e-8 2> log > species_20Mb.sfs`
 

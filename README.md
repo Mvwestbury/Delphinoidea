@@ -6,7 +6,7 @@ Note: This is not meant to be standalone commands but examples to be used for re
 ## Sequencing read filtering and mapping
 - Included script: Modern_mapping_mem_PE.sh
 
-## Finding sex-linked scaffolds/autosomes https://github.com/bioinfologics/satsuma2
+## Finding sex-linked scaffolds/autosomes [http://satsuma.sourceforge.net/]
 - Use satsuma synteny
 
 `satsuma - SatsumaSynteny -m 1 -n 30 -q Referencegenome.fasta -t X_Y_chromosomes.fasta -o output_directory`
